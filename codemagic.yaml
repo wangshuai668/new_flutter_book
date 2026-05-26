@@ -13,6 +13,9 @@ workflows:
         script: |
           unrar x jizhang.rar .
           ls -la
+          # 自动找到 pubspec.yaml 所在的目录并进入
+          cd $(find . -name pubspec.yaml -type f -exec dirname {} \; | head -n 1)
+          echo "Working directory: $(pwd)"
       - name: Flutter dependencies
         script: flutter pub get
       - name: Build iOS IPA
