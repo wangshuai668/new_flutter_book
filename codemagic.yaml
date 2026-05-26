@@ -7,11 +7,11 @@ workflows:
       flutter: 3.22.0
       xcode: 15.4
     scripts:
+      - name: Install unrar
+        script: brew install unrar
       - name: Unzip project
         script: |
-          # 解压你的压缩包（如果是zip用unzip，rar用unrar，这里用zip更通用）
-          unrar x jizhang.rar
-          # 确认项目根目录存在
+          unrar x jizhang.rar .
           ls -la
       - name: Flutter dependencies
         script: flutter pub get
