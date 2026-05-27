@@ -6,19 +6,26 @@ workflows:
     environment:
       flutter: 3.22.0
       xcode: 15.4
+    # 关键：关闭所有自动步骤，全程用脚本控制
     scripts:
-      - name: Install unrar
-        script: brew install unrar
-      - name: Unzip project
+      - name: 1. 安装解压工具
+        script: |
+          brew install unrar
+      - name: 2. 解压项目并定位根目录
         script: |
           unrar x jizhang.rar .
           ls -la
           # 找到 pubspec.yaml 所在目录
-          PROJECT_DIR=$(find . -name pubspec.yaml -type f -exec dirname {} \; | head -n 1)
-          echo "Project directory: $PROJECT_DIR"
-          # 进入目录并执行后续所有命令
+          export PROJECT_DIR=$(find . -name pubspec.yaml -type f -exec dirname {} \; | head -n 1)
+          echo "项目目录: $PROJECT_DIR"
+          # 进入项目目录，执行后续所有命令
+          cd $PROJECT_DIR
+          pwd
+      - name: 3. 安装依赖并打包
+        script: |
+          # 进入上一步脚本找到的目录
           cd $PROJECT_DIR
           flutter pub get
           flutter build ipa --release
     artifacts:
-      - build/ios/ipa/*.ipa
+      - $PROJECT_DIR/build/ios/ipa/*.ipa
